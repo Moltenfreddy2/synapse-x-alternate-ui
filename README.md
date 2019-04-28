@@ -1,4 +1,4 @@
-## Serverside WebSocket Integration
+## Synapse X Alternate UI
 
 This application uses the Roblox exploit Synapse X's WebSocket API and Electron to create a secondary UI to execute local and eventually server scripts.
 #### Running:
