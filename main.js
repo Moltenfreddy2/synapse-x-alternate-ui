@@ -1,7 +1,7 @@
 const electron = require('electron')
 const url = require('url')
 
-process.env.NODE_ENV = 'production';
+process.env.NODE_ENV = 'development';
 
 const {app, BrowserWindow, Menu, ipcMain} = electron;
 
