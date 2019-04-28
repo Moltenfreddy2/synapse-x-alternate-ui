@@ -1,0 +1,29 @@
+{
+  "name": "test-ui",
+  "productName": "Test UI",
+  "version": "0.1.0",
+  "description": "Interface with ROBLOX serverside with ease",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron main.js",
+    "package-win": "electron-packager . test-ui --overwrite --asar --platform=win32 --arch=ia32 --icon=assets/icons/win/icon.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Test UI\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lingress/serverside-websocket-integration.git"
+  },
+  "license": "OSL-3.0",
+  "bugs": {
+    "url": "https://github.com/lingress/serverside-websocket-integration/issues"
+  },
+  "homepage": "https://github.com/lingress/serverside-websocket-integration#readme",
+  "author": "nae nae inc",
+  "dependencies": {
+    "monaco-editor": "^0.16.2",
+    "ws": "^6.2.1"
+  },
+  "devDependencies": {
+    "electron": "^5.0.0",
+    "electron-packager": "^13.1.1"
+  }
+}

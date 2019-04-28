@@ -59,3 +59,10 @@ typings/
 
 # next.js build output
 .next
+
+# vscode
+*.code-workspace
+.vscode/
+
+# release-builds
+release-builds/
