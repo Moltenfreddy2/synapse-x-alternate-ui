@@ -18,6 +18,9 @@ npm start
 In the application's root directory, there is a file named `MonacoTheme.json`
 This file contains the theme used by the application's editor, Monaco, and can easily be changed with [other themes](https://github.com/brijeshb42/monaco-themes/tree/master/themes).
 
-
+#### Roadmap:
+* Fix NODE_ENV bug
+* Fix WebSocket communication issues
+* Eventually switch to Synapse X's new Developer API
 
 
