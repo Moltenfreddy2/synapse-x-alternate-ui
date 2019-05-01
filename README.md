@@ -10,6 +10,7 @@ Or, you can run the app unpackaged with
  ```
 npm start
 ```
+You can also download a pre-packaged binary from the [releases page](https://github.com/lingress/synapse-x-alternate-ui/releases/)
 #### Dependencies:
 * For running the app unpackaged, Node.js and development dependencies must be installed.
 * WebSocket must be enabled in Synapse X's theme.json file.
