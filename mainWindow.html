@@ -2,7 +2,7 @@
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
     <head>
-      <title>Electron</title>
+      <title>Test UI | Not attached</title>
     <style type="text/css">
       html,
       body {
@@ -23,9 +23,8 @@
     <script type="text/javascript">
       const electron = nodeRequire('electron');
       const fs = nodeRequire("fs")
-      const {ipcRenderer} = electron;
-      const dialog = electron.remote.dialog
-      const WebSocket = nodeRequire("ws")
+      const {ipcRenderer, remote} = electron;
+      const {dialog, Menu, MenuItem} = remote;
       
       function bufferFile(relPath) {
         return fs.readFileSync(relPath,{ encoding: 'utf8' });
@@ -267,39 +266,11 @@
           setText("");
           editor.trigger('keyboard', 'type', {text: text});
         }
-        ipcRenderer.on("attach", function() {
-          const attach_ws = new WebSocket("ws://localhost:24892/attach")
-          attach_ws.on("open", function() {
-            console.log("opened")
-            attach_ws.send("ATTACH")
-          })
-          attach_ws.on("message", function incoming(data) {
-            console.log(data)
-            if (data == "READY") {
-              document.title = "Test UI | " + "Attached"
-            } else if (data == "ALREADY_ATTACHED") {
-              document.title = "Test UI | " + "Already attached!"
-              setTimeout(function() {
-                document.title = "Test UI | " + "Attached"
-              }, 3000)
-            } else if(data == "INTERRUPT") {
-              document.title = "Test UI | " + "Failed to attach"
-              setTimeout(function() {
-                document.title = "Test UI | " + "Not attached"
-              }, 3000)
-            } else if (data == "FAILED_TO_FIND") {
-              document.title = "Test UI | " + "Failed to find Roblox"
-              setTimeout(function() {
-                document.title = "Test UI | " + "Not attached"
-              }, 3000)
-            }
-          })
+        ipcRenderer.on("set-doc-title", function(e,title) {
+          document.title = "Test UI | " + title
         })
-        ipcRenderer.on("exec",function() {
-          const execute_ws = new WebSocket("ws://localhost:24892/execute")
-          execute_ws.on("open", function() {
-            execute_ws.send(GetText())
-          })
+        ipcRenderer.on("send-script",function() {
+          ipcRenderer.send("script",GetText())
         })
         ipcRenderer.on('clear-editor', function() {
           SetText("")
