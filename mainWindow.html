@@ -17,21 +17,36 @@
         <title></title>
     </head>
     <div id="container" style="width:100%;height:100%;"></div>
-    <script> var nodeRequire = global.require 
-    </script>
-        <script src="vs/loader.js"></script>
     <script type="text/javascript">
-      const electron = nodeRequire('electron');
-      const fs = nodeRequire("fs")
+      const electron = require('electron');
+      const fs = require("fs")
       const {ipcRenderer, remote} = electron;
       const {dialog, Menu, MenuItem} = remote;
       
+      const path = require('path');
+      const amdLoader = require('./node_modules/monaco-editor/dev/vs/loader.js');
+      const amdRequire = amdLoader.require;
+      const amdDefine = amdLoader.require.define;
+      function uriFromPath(_path) {
+        var pathName = path.resolve(_path).replace(/\\/g, '/');
+        if (pathName.length > 0 && pathName.charAt(0) !== '/') {
+          pathName = '/' + pathName;
+        }
+        return encodeURI('file://' + pathName);
+      }
+      amdRequire.config({
+        baseUrl: uriFromPath(path.join(__dirname, './node_modules/monaco-editor/dev'))
+      });
+      // workaround monaco-css not understanding the environment
+      self.module = undefined;
+
       function bufferFile(relPath) {
         return fs.readFileSync(relPath,{ encoding: 'utf8' });
       }
 
-      var amdRequire = global.require;
-      amdRequire.config({ paths: { 'vs': 'vs' } });
+      amdRequire.config({
+			  baseUrl: uriFromPath(path.join(__dirname, './node_modules/monaco-editor/dev'))
+		  });
       // API
       var GetText;
       var SetText;
@@ -68,9 +83,30 @@
           }
         });				
 
-        var ThemeJSON = JSON.parse(bufferFile("./MonacoTheme.json"))
-        document.bgColor = ThemeJSON.colors["editor.background"]
-        monaco.editor.defineTheme('theme', ThemeJSON);
+        function checkForFile(fileName,callback,callback2) {
+          fs.exists(fileName, function (exists) {
+            if(exists) {
+              callback(fileName);
+            } else {
+              callback2(fileName);
+            }
+          });
+        }
+
+        checkForFile("./theme.json", function(filePath) {
+          const theme = JSON.parse(bufferFile(filePath))
+          monaco.editor.defineTheme("theme",theme)
+          SetTheme("theme")
+        }, function(filePath) {
+          var defTheme = bufferFile("./assets/defaultTheme.json")
+          fs.writeFile(filePath,defTheme,function(err) {
+            if(err) { return console.log(err) }
+            const theme = JSON.parse(bufferFile(filePath))
+            monaco.editor.defineTheme("theme",theme)
+            SetTheme("theme")
+          });
+        })
+        monaco.editor.defineTheme("default",JSON.parse(bufferFile("./assets/defaultTheme.json")))
         editor = monaco.editor.create(document.getElementById('container'), {
           value: [
             "--[[",
@@ -78,7 +114,7 @@
             "--]]",
           ].join('\n'),
           language: 'lua',
-          theme: "theme",
+          theme: "default",
           folding: true,
           scrollbar: {
             verticalHasArrows: true,
@@ -105,7 +141,7 @@
         }
         
         SetTheme = function(themeName) {
-          monaco.editor.setTheme("themeName");
+          monaco.editor.setTheme(themeName);
         }
         
         SwitchMinimap = function(flag) {

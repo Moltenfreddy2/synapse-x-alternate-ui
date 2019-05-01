@@ -66,3 +66,6 @@ typings/
 
 # release-builds
 release-builds/
+
+# local theme file
+theme.json
